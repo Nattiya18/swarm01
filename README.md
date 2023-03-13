@@ -128,3 +128,43 @@
   * Push ขึ้นไปที่ Docker Hub 
   
          docker push nattiya18/plex:plex1
+
+![image](https://user-images.githubusercontent.com/119166253/224608019-29e50de9-4bf4-49fd-b8c0-282fade806b8.png)
+
+  Add Stack ใน Portainer โดยใช้โค้ด
+       
+              version: '3.3' 
+                  services:
+                       web: 
+               image: nattiya18/plex:plex1
+               networks: 
+               - webproxy 
+               logging:
+               driver: json-file
+               container_name: plexeye
+               deploy: 
+               replicas: 1 
+               labels: 
+                   - traefik.docker.network=webproxy
+                   - traefik.enable=true
+                   - traefik.http.routers.plexeye-https.entrypoints=websecure
+                   - traefik.http.routers.plexeye-https.rule=Host("plexeye.xops.ipv9.xyz")
+                   - traefik.http.routers.plexeye-https.tls.certresolver=default
+                   - traefik.http.services.plexeye.loadbalancer.server.port=32400
+              resources: 
+              reservations: 
+              cpus: '0.1'
+              memory: 10M
+              limits: 
+              cpus: '0.4'
+              memory: 160M
+              networks: 
+              webproxy: 
+              external: true
+    
+   ![image](https://user-images.githubusercontent.com/119166253/224608261-6eadfd5b-746e-40df-ae15-9788c915ef96.png)
+   
+   
+ทดลองเข้าเพื่อดูผลลัพธ์ของ image 
+
+![image](https://user-images.githubusercontent.com/119166253/224609171-6d60f1b3-f03f-4a15-ac4c-b378ef696170.png)
